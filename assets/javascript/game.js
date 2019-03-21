@@ -27,13 +27,18 @@
 // Attack Points (Goes up with every click)
 // Counter Attack Power
 
-var character = {
-    name: "",
-    pic: "",
-    health: "",
-    attack: "",
-    counterAttack: ""
-}
+var characterExample = {
+  name: "",
+  pic: "",
+  health: "",
+  attack: "",
+  counterAttack: ""
+};
+
+var characters = [
+  { name: "Caleb", pic: "...", health: "", attack: "", counterAttack: "" },
+  { name: "Character2", pic: "...", health: "", attack: "", counterAttack: "" }
+];
 
 var names = [];
 var pics = [];
@@ -43,4 +48,7 @@ var counterAttacks = [];
 
 // Go through examples from Monday
 
-// Step 1: Get one character card to appear correctly
+// Step 1: Get one character card to appear correctly (for example)
+//  // A: Character ARRAY
+
+// Step 2: For loop remaining characters
