@@ -43,7 +43,34 @@ var characters = [
     attack: "25",
     counterAttack: "20"
   },
-  { name: "Character2", pic: "...", health: "", attack: "", counterAttack: "" }
+  {
+    name: "Ryuji",
+    pic: "assets/images/ryuji.jpg",
+    health: "140",
+    attack: "30",
+    counterAttack: "25"
+  },
+  {
+    name: "Yusuke",
+    pic: "assets/images/yusuke.jpg",
+    health: "110",
+    attack: "20",
+    counterAttack: "20"
+  },
+  {
+    name: "Akechi",
+    pic: "assets/images/crow.jpg",
+    health: "105",
+    attack: "20",
+    counterAttack: "25"
+  },
+  {
+    name: "Kamoshida",
+    pic: "assets/images/kamoshida.png",
+    health: "200",
+    attack: "15",
+    counterAttack: "30"
+  }
 ];
 
 var names = [];
@@ -51,6 +78,8 @@ var pics = [];
 var healthArray = [];
 var attacks = [];
 var counterAttacks = [];
+var playerCharacter;
+var opponent;
 
 // Go through examples from Monday
 
@@ -59,7 +88,7 @@ var counterAttacks = [];
 
 // Step 2: For loop remaining characters
 
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < characters.length; i++) {
   var card = $(`<div class='card'><img src='${
     characters[i]["pic"]
   }' class='card-img-top' alt='${characters[i]["name"]}'>
@@ -72,3 +101,12 @@ for (var i = 0; i < 1; i++) {
 
   $(".card-deck").append(card);
 }
+
+function placeCharacter() {}
+
+$(".card").on("click", function() {
+  var card = $(this);
+  if (!$(".playerSide").find("div.player")) {
+    $(".playerSide").append(card);
+  }
+});
