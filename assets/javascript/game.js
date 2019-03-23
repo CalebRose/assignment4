@@ -27,13 +27,24 @@
 // Attack Points (Goes up with every click)
 // Counter Attack Power
 
-var character = {
-    name: "",
-    pic: "",
-    health: "",
-    attack: "",
-    counterAttack: ""
-}
+var characterExample = {
+  name: "",
+  pic: "",
+  health: "",
+  attack: "",
+  counterAttack: ""
+};
+
+var characters = [
+  {
+    name: "Joker",
+    pic: "assets/images/joker.jpg",
+    health: "100",
+    attack: "25",
+    counterAttack: "20"
+  },
+  { name: "Character2", pic: "...", health: "", attack: "", counterAttack: "" }
+];
 
 var names = [];
 var pics = [];
@@ -43,4 +54,21 @@ var counterAttacks = [];
 
 // Go through examples from Monday
 
-// Step 1: Get one character card to appear correctly
+// Step 1: Get one character card to appear correctly (for example)
+//  // A: Character ARRAY
+
+// Step 2: For loop remaining characters
+
+for (var i = 0; i < 1; i++) {
+  var card = $(`<div class='card'><img src='${
+    characters[i]["pic"]
+  }' class='card-img-top' alt='${characters[i]["name"]}'>
+    <div class='card-body'>
+    <h5 class='card-title'>${characters[i]["name"]}</h5>
+    <p class='card-text'>Health: ${characters[i]["health"]}</p>
+    </div>
+    </div>
+    `);
+
+  $(".card-deck").append(card);
+}
