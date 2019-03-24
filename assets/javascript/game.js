@@ -1,7 +1,3 @@
-// Create card on html
-// Create Character object
-// Setup Method
-
 // Click on character to become player character
 
 // Click on character to become opponent
@@ -140,21 +136,31 @@ $(document).ready(function() {
   });
 
   $(".card").on("click", function() {
+    console.log(opponentBool);
     var card = $(this);
     if (playerBool) {
       card.attr("id", "player");
       card.appendTo(".playerSide");
-      player.health = card.children(".attack").value;
+      player.health = card.find(".health").attr("value");
+      player.attack = card.find(".attack").attr("value");
+      player.counterAttack = card.find(".counterAttack").attr("value");
       console.log(player.health);
       playerBool = false;
       opponentBool = true;
       $("#statusText").text("Select your opponent");
     } else if (opponentBool) {
-      card.attr("id", "opponent");
-      card.appendTo(".opponentSide");
-      opponentBool = false;
-      $("#statusText").text("Select your difficulty");
-      $("#difficulty").toggle();
+      if (card.attr("id", "player")) {
+        $("#statusText").text(
+          "You cannot select your player character as your opponent. Please try again."
+        );
+        return;
+      } else {
+        card.attr("id", "opponent");
+        card.appendTo(".opponentSide");
+        opponentBool = false;
+        $("#statusText").text("Select your difficulty");
+        $("#difficulty").toggle();
+      }
     }
   });
 });
