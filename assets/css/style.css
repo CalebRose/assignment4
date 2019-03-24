@@ -2,10 +2,22 @@
     margin-bottom: 10px;
 }
 
+#status {
+    display: block;
+    text-align: center;
+}
+
+
+
 .card-deck {
+    display: inline;
     margin: 0;
     max-width: 500px;
     /*flex-direction: column; */
+}
+
+.battlefield {
+    display: inline;
 }
 
 .card {
@@ -19,3 +31,8 @@
 }
 
 .card img {}
+
+.footer {
+
+    text-align: center;
+}
