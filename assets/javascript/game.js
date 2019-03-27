@@ -218,7 +218,7 @@
             player.health = player.health - opponent.counterAttack;
             $("#playerHealth").text(player.health);
             $("#battleText").text(
-              "Critical Hit! You took " +
+              "Wow! Your opponent landed a critical hit! You took " +
                 opponent.counterAttack +
                 " damage and are stunned for the next turn! (Click either the attack button or parry button to continue)"
             );
@@ -246,7 +246,9 @@
         $("#playerHealth").text(player.health);
         stunBool = false;
         $("#battleText").text(
-          "A direct strike! You took " + opponent.attack + " damage!"
+          "Your opponent struck you while you were down! You took " +
+            opponent.attack +
+            " damage!"
         );
       } else if (opponentStun && stunBool) {
         $("#battleText").text("Both combatants stood idly for a few moments.");
@@ -307,6 +309,8 @@
           $("#playerHealth").text(player.health);
           $("#battleText").text("");
           $("#upgrades").toggle();
+          stunBool = false;
+          opponentStun = false;
         }
       } else {
         $("#statusText").text(
@@ -365,5 +369,7 @@
     $("#reset").toggle();
     standardMode = false;
     advancedMode = false;
+    stunBool = false;
+    opponentStun = false;
   });
 })(jQuery);
