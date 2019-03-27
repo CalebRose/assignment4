@@ -1,9 +1,3 @@
-// Click on character to become player character
-
-// Click on character to become opponent
-
-// Place opponent into defender area
-
 // Attack button
 // Click event ========
 // Character damages defender. Defender loses HP
@@ -12,16 +6,6 @@
 // Player can now choose new opponent
 // ====================
 
-// Win conditions
-// Player defeats all enemies. Characters array === 0;
-
-// Lose condition
-// Player's HP hits 0
-
-// Attributes
-// Health Points
-// Attack Points (Goes up with every click)
-// Counter Attack Power
 (function($) {
   var characters = [
     {
@@ -30,7 +14,7 @@
       health: 100,
       attack: 30,
       counterAttack: 10,
-      parry: ""
+      parry: 30
     },
     {
       name: "Ryuji",
@@ -38,7 +22,7 @@
       health: 80,
       attack: 50,
       counterAttack: 15,
-      parry: ""
+      parry: 20
     },
     {
       name: "Yusuke",
@@ -46,7 +30,7 @@
       health: 110,
       attack: 30,
       counterAttack: 10,
-      parry: ""
+      parry: 50
     },
     {
       name: "Akechi",
@@ -54,7 +38,7 @@
       health: 105,
       attack: 24,
       counterAttack: 15,
-      parry: ""
+      parry: 40
     },
     {
       name: "Kamoshida",
@@ -62,30 +46,32 @@
       health: 200,
       attack: 15,
       counterAttack: 20,
-      parry: ""
+      parry: 40
     }
   ];
 
-  var player = { attack: "", health: "", counterAttack: "" };
-  var opponent = { attack: "", health: "", counterAttack: "" };
+  var player = { attack: 0, health: 0, counterAttack: 0, parry: 0 };
+  var opponent = { attack: 0, health: 0, counterAttack: 0, parry: 0 };
   var baseAttack;
-  var opponentHealth;
+  var baseParry;
+  var baseHealth;
+  var opponentBaseAttack;
+  var opponentBaseCounter;
   var playerBool;
   var opponentBool;
   var standardMode;
   var advancedMode;
-  var displayMessage = document.getElementById("#status");
-
-  // Go through examples from Monday
-
-  // Step 1: Get one character card to appear correctly (for example)
-  //  // A: Character ARRAY
-
-  // Step 2: For loop remaining characters
+  var advHealthUpgrade;
+  var advAttackUpgrade;
+  var stunBool;
+  var opponentStun;
+  var stunChance;
 
   $("#battleUI").css("display", "none");
   $("#difficulty").css("display", "none");
   $("#reset").css("display", "none");
+  $("#upgrades").css("display", "none");
+
   setUpGame();
   function setUpGame() {
     for (var i = 0; i < characters.length; i++) {
@@ -120,20 +106,22 @@
     $("#statusText").text("Select a character");
   }
 
-  $(".card").on("click", function() {
+  //   $(".card").on("click", function() {
+  $(document).on("click", ".card", function() {
     var card = $(this);
     if (playerBool) {
       card.attr("id", "player");
       card.appendTo(".playerSide");
       player.health = parseInt(card.find(".health").attr("value"));
       card.find(".health").attr("id", "playerHealth");
-      //playerHealth = document.getElementById("playerHealth");
       player.attack = parseInt(card.find(".attack").attr("value"));
-      baseAttack = parseInt(player.attack);
       player.counterAttack = parseInt(
         card.find(".counterAttack").attr("value")
       );
       player.parry = parseInt(card.find(".parry").attr("value"));
+      baseAttack = parseInt(player.attack);
+      baseHealth = parseInt(player.health);
+      baseParry = parseInt(player.parry);
       playerBool = false;
       opponentBool = true;
       $("#statusText").text("Select your opponent");
@@ -149,9 +137,11 @@
         opponent.health = parseInt(card.find(".health").attr("value"));
         card.find(".health").attr("id", "opponentHealth");
         opponent.attack = parseInt(card.find(".attack").attr("value"));
+        opponentBaseAttack = parseInt(opponent.attack);
         opponent.counterAttack = parseInt(
           card.find(".counterAttack").attr("value")
         );
+        opponentBaseCounter = opponent.counterAttack * 2;
         opponent.parry = parseInt(card.find(".parry").attr("value"));
         opponentBool = false;
         if (!advancedMode && !standardMode) {
@@ -159,6 +149,7 @@
           $("#difficulty").toggle();
         } else if (standardMode || advancedMode) {
           $("#battleUI").toggle();
+          $("#statusText").text("Fight!");
         }
       }
     }
@@ -174,41 +165,125 @@
   });
 
   $("#advancedMode").click(function() {
+    // Change player & opponent attack stats. State base power for both?
     $("#battleUI").toggle();
     $("#difficulty").toggle();
     $("#statusText").text(
       "Press the Attack Button to attack. Press the Parry Button to parry. Fight!"
     );
     advancedMode = true;
+    advHealthUpgrade = 25;
+    advAttackUpgrade = baseAttack;
   });
 
   $("#attack").click(function() {
+    // Standard
     if (standardMode && !advancedMode) {
       opponent.health = opponent.health - player.attack;
       player.health = player.health - opponent.counterAttack;
       player.attack += baseAttack;
       $("#opponentHealth").text(opponent.health);
       $("#playerHealth").text(player.health);
-      console.log(player.attack);
-      console.log(baseAttack);
-    } else if (advancedMode && !standardMode) {
+      // Advanced Below //
       //
+    } else if (advancedMode && !standardMode) {
+      player.attack = Math.floor(Math.random() * baseAttack) + 1;
+      opponent.counterAttack =
+        Math.floor(Math.random() * opponentBaseCounter) + 1;
+      // Player attack is greater than Opponent
+      if (!opponentStun) {
+        if (player.attack > opponent.counterAttack) {
+          opponent.health =
+            opponent.health - (player.attack - opponent.counterAttack);
+          $("#opponentHealth").text(opponent.health);
+          $("#battleText").text(
+            "What a hit! Your opponent took " +
+              (player.attack - opponent.counterAttack) +
+              " damage!"
+          );
+          // If Opponent Counter Attack Greater than Player attack
+        } else if (player.attack < opponent.counterAttack) {
+          player.health =
+            player.health - (opponent.counterAttack - player.attack);
+          $("#playerHealth").text(player.health);
+          $("#battleText").text(
+            "Oof! That's gotta hurt. You took " +
+              (opponent.counterAttack - player.attack) +
+              " damage!"
+          );
+        }
+      } else {
+        opponent.health = opponent.health - player.attack;
+        $("#opponentHealth").text(opponent.health);
+        opponentStun = false;
+        $("#battleText").text(
+          "A direct strike! You dealt " + player.attack + " damage!"
+        );
+      }
     } else {
-      $("#statusText").text("Something is wrong.");
+      $("#statusText").text("Something went wrong.");
     }
+    battleConditions();
+  });
+  $("#parry").click(function() {
+    opponent.attack = Math.floor(Math.random() * opponentBaseAttack) + 1;
+    player.parry = Math.floor(Math.random() * baseParry) + 1;
+    if (opponent.attack > player.parry) {
+      // If the opponent's attack is greater than the player's parry
+      player.health = player.health - (opponent.attack - player.parry);
+      $("#playerHealth").text(player.health);
+      $("#battleText").text(
+        "Oh no! Your parry failed! You took " +
+          (opponent.attack - player.parry) +
+          " damage!"
+      );
+    } else {
+      // Otherwise, if the player's parry is greater than the opponent's attack
+      stunChance = Math.floor(Math.random() * 100) + 1;
+      if (stunChance <= 10) {
+        // if stun chance is Less than or equal to 10
+        // Stun Chance
+        opponentStun = true;
+        $("#battleText").text(
+          "Amazing! You've stunned your opponent! They cannot defend your next attack!"
+        );
+      } else {
+        opponent.health = opponent.health - player.parry;
+        $("#opponentHealth").text(opponent.health);
+        $("#battleText").text(
+          "You blocked your opponent! You managed to chip away their health with " +
+            player.parry +
+            " damage!"
+        );
+      }
+    }
+    battleConditions();
+  });
 
+  function battleConditions() {
     if (opponent.health <= 0 && player.health > 0) {
       if ($(".card-deck").children().length > 0) {
-        $("#statusText").text(
-          "Congratulations, you win! Choose your next opponent."
-        );
-        opponentBool = true;
+        if (standardMode && !advancedMode) {
+          $("#statusText").text(
+            "Congratulations, you win! Choose your next opponent."
+          );
+          opponentBool = true;
+        } else if (advancedMode && !standardMode) {
+          $("#statusText").text(
+            "Congratulations, you defeated your opponent! Select an upgrade before continuing."
+          );
+          player.health = baseHealth;
+          $("#playerHealth").text(player.health);
+          $("#battleText").text("");
+          $("#upgrades").toggle();
+        }
       } else {
         $("#statusText").text(
           "Congratulations, there are no more opponents to face. You win!"
         );
         $("#reset").toggle();
       }
+      // Toggles Battle UI and clears Opponent's Side of Field
       $("#battleUI").toggle();
       $(".opponentSide").empty();
     } else if (opponent.health <= 0 && player.health <= 0) {
@@ -222,12 +297,39 @@
       $("#battleUI").toggle();
       $("#reset").toggle();
     }
+  }
+
+  $("#healthUpgrade").click(function() {
+    $("#upgrades").toggle();
+    opponentBool = true;
+    $("#statusText").text(
+      "Your health has increased by " +
+        advHealthUpgrade +
+        ". Choose your next opponent."
+    );
+    baseHealth += advHealthUpgrade;
+    player.health = baseHealth;
+    $("#playerHealth").text(player.health);
+  });
+
+  $("#attackUpgrade").click(function() {
+    $("#upgrades").toggle();
+    opponentBool = true;
+    $("#statusText").text(
+      "Your attack has increased by " +
+        advAttackUpgrade +
+        ". Choose your next opponent."
+    );
+    baseAttack += advAttackUpgrade;
   });
 
   $("#resetButton").click(function() {
     $(".playerSide").empty();
     $(".opponentSide").empty();
+    $(".card-deck").empty();
     setUpGame();
     $("#reset").toggle();
+    standardMode = false;
+    advancedMode = false;
   });
 })(jQuery);
