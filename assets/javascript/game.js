@@ -66,6 +66,7 @@
   var stunBool;
   var opponentStun;
   var stunChance;
+  var criticalChance;
 
   $("#battleUI").css("display", "none");
   $("#difficulty").css("display", "none");
@@ -188,19 +189,41 @@
       player.attack = Math.floor(Math.random() * baseAttack) + 1;
       opponent.counterAttack =
         Math.floor(Math.random() * opponentBaseCounter) + 1;
+      criticalChance = Math.floor(Math.random() * 100) + 1;
       // Player attack is greater than Opponent
-      if (!opponentStun) {
+      if (!opponentStun && !stunBool) {
         if (player.attack > opponent.counterAttack) {
-          opponent.health =
-            opponent.health - (player.attack - opponent.counterAttack);
-          $("#opponentHealth").text(opponent.health);
-          $("#battleText").text(
-            "What a hit! Your opponent took " +
-              (player.attack - opponent.counterAttack) +
-              " damage!"
-          );
+          if (criticalChance <= 5) {
+            opponent.health = opponent.health - player.attack;
+            $("#opponentHealth").text(opponent.health);
+            $("#battleText").text(
+              "CRITICAL HIT! You struck your opponent with " +
+                player.attack +
+                " damage and stunned them!"
+            );
+            opponentStun = true;
+          } else {
+            opponent.health =
+              opponent.health - (player.attack - opponent.counterAttack);
+            $("#opponentHealth").text(opponent.health);
+            $("#battleText").text(
+              "What a hit! Your opponent took " +
+                (player.attack - opponent.counterAttack) +
+                " damage!"
+            );
+          }
           // If Opponent Counter Attack Greater than Player attack
         } else if (player.attack < opponent.counterAttack) {
+          if (criticalChance <= 5) {
+            player.health = player.health - opponent.counterAttack;
+            $("#playerHealth").text(player.health);
+            $("#battleText").text(
+              "Critical Hit! You took " +
+                opponent.counterAttack +
+                " damage and are stunned for the next turn! (Click either the attack button or parry button to continue)"
+            );
+            stunBool = true;
+          }
           player.health =
             player.health - (opponent.counterAttack - player.attack);
           $("#playerHealth").text(player.health);
@@ -210,13 +233,25 @@
               " damage!"
           );
         }
-      } else {
+      } else if (opponentStun && !stunBool) {
         opponent.health = opponent.health - player.attack;
         $("#opponentHealth").text(opponent.health);
         opponentStun = false;
         $("#battleText").text(
           "A direct strike! You dealt " + player.attack + " damage!"
         );
+      } else if (!opponentStun && stunBool) {
+        opponent.attack = Math.floor(Math.random() * opponentBaseAttack) + 1;
+        player.health = player.health - opponent.attack;
+        $("#playerHealth").text(player.health);
+        stunBool = false;
+        $("#battleText").text(
+          "A direct strike! You took " + opponent.attack + " damage!"
+        );
+      } else if (opponentStun && stunBool) {
+        $("#battleText").text("Both combatants stood idly for a few moments.");
+        opponentStun = false;
+        stunBool = false;
       }
     } else {
       $("#statusText").text("Something went wrong.");
@@ -236,7 +271,7 @@
     } else {
       // Otherwise, if the player's parry is greater than the opponent's attack
       stunChance = Math.floor(Math.random() * 100) + 1;
-      if (stunChance <= 10) {
+      if (stunChance <= 15) {
         // if stun chance is Less than or equal to 10
         // Stun Chance
         opponentStun = true;
@@ -322,6 +357,7 @@
   });
 
   $("#resetButton").click(function() {
+    $("#battleText").text("");
     $(".playerSide").empty();
     $(".opponentSide").empty();
     $(".card-deck").empty();
