@@ -33,6 +33,6 @@
 .card img {}
 
 .footer {
-
+    bottom: 0;
     text-align: center;
 }
