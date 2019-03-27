@@ -36,17 +36,17 @@
       name: "Akechi",
       pic: "assets/images/crow.jpg",
       health: 105,
-      attack: 24,
+      attack: 25,
       counterAttack: 15,
-      parry: 40
+      parry: 25
     },
     {
       name: "Kamoshida",
       pic: "assets/images/kamoshida.png",
       health: 200,
-      attack: 15,
+      attack: 20,
       counterAttack: 20,
-      parry: 40
+      parry: 20
     }
   ];
 
@@ -172,8 +172,6 @@
       "Press the Attack Button to attack. Press the Parry Button to parry. Fight!"
     );
     advancedMode = true;
-    advHealthUpgrade = 25;
-    advAttackUpgrade = baseAttack;
   });
 
   $("#attack").click(function() {
@@ -230,12 +228,10 @@
     player.parry = Math.floor(Math.random() * baseParry) + 1;
     if (opponent.attack > player.parry) {
       // If the opponent's attack is greater than the player's parry
-      player.health = player.health - (opponent.attack - player.parry);
+      player.health = player.health - opponent.attack;
       $("#playerHealth").text(player.health);
       $("#battleText").text(
-        "Oh no! Your parry failed! You took " +
-          (opponent.attack - player.parry) +
-          " damage!"
+        "Oh no! Your parry failed! You took " + opponent.attack + " damage!"
       );
     } else {
       // Otherwise, if the player's parry is greater than the opponent's attack
@@ -302,19 +298,21 @@
   $("#healthUpgrade").click(function() {
     $("#upgrades").toggle();
     opponentBool = true;
+    advHealthUpgrade = Math.floor(Math.random() * 20 + 10);
+    baseHealth += advHealthUpgrade;
+    player.health = baseHealth;
+    $("#playerHealth").text(player.health);
     $("#statusText").text(
       "Your health has increased by " +
         advHealthUpgrade +
         ". Choose your next opponent."
     );
-    baseHealth += advHealthUpgrade;
-    player.health = baseHealth;
-    $("#playerHealth").text(player.health);
   });
 
   $("#attackUpgrade").click(function() {
     $("#upgrades").toggle();
     opponentBool = true;
+    advAttackUpgrade = Math.floor(Math.random() * (baseAttack - 10) + 10);
     $("#statusText").text(
       "Your attack has increased by " +
         advAttackUpgrade +
