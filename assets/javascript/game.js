@@ -1,11 +1,3 @@
-// Attack button
-// Click event ========
-// Character damages defender. Defender loses HP
-// Opponent counter attacks. Player loses HP
-// When defender's HP is reduced to zero, remove enemy from defender area and place in graveyard.
-// Player can now choose new opponent
-// ====================
-
 (function($) {
   var characters = [
     {
@@ -129,7 +121,6 @@
   var stunChance;
   var criticalChance;
   var battleMusic = false;
-  var finalBoss = false;
   var lastSurprise = new Audio("assets/music/LastSurprise.mp3");
   var victory = new Audio("assets/music/Victory.mp3");
   var riversInTheDesert = new Audio("assets/music/RiversintheDesert.mp3");
@@ -201,7 +192,6 @@
     }
   }
 
-  //   $(".card").on("click", function() {
   $(document).on("click", ".card", function() {
     var card = $(this);
     if (playerBool) {
