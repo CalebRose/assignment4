@@ -337,15 +337,16 @@
                 " damage and are stunned for the next turn! (Click either the attack button or parry button to continue)"
             );
             stunBool = true;
+          } else {
+            player.health =
+              player.health - (opponent.counterAttack - player.attack);
+            $("#playerHealth").text(player.health);
+            $("#battleText").text(
+              "Oof! That's gotta hurt. You took " +
+                (opponent.counterAttack - player.attack) +
+                " damage!"
+            );
           }
-          player.health =
-            player.health - (opponent.counterAttack - player.attack);
-          $("#playerHealth").text(player.health);
-          $("#battleText").text(
-            "Oof! That's gotta hurt. You took " +
-              (opponent.counterAttack - player.attack) +
-              " damage!"
-          );
         } else {
           $("#battleText").text("Your swords have clashed! No damage!");
         }
