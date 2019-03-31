@@ -61,7 +61,7 @@
   var bosses = [
     {
       name: "King Kamoshida",
-      pic: "assets/images/king.png",
+      pic: "./assets/images/king.png",
       health: 200,
       attack: 30,
       counterAttack: 40,
@@ -69,7 +69,7 @@
     },
     {
       name: "Kaneshiro",
-      pic: "assets/images/kaneshiro.png",
+      pic: "./assets/images/kaneshiro.png",
       health: 250,
       attack: 70,
       counterAttack: 65,
@@ -77,7 +77,7 @@
     },
     {
       name: "Okumura",
-      pic: "assets/images/okumura.png",
+      pic: "./assets/images/okumura.png",
       health: 350,
       attack: 80,
       counterAttack: 100,
@@ -85,7 +85,7 @@
     },
     {
       name: "Sae",
-      pic: "assets/images/sae.png",
+      pic: "./assets/images/sae.png",
       health: 425,
       attack: 90,
       counterAttack: 175,
@@ -93,7 +93,7 @@
     },
     {
       name: "Shido",
-      pic: "assets/images/shido2.png",
+      pic: "./assets/images/shido.png",
       health: 500,
       attack: 100,
       counterAttack: 225,
